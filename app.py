@@ -8,19 +8,12 @@ from pages import about
 from pages import github
 from pages import try_it
 
-
 routes = {
     "Home": home.main,
     "Try it out": try_it.main,
     "About": about.main,
     "GitHub": github.main,
 }
-
-# st.markdown(
-#     "<head> <meta http-equiv=\"Content-Security-Policy\" \"> </head>",
-#     unsafe_allow_html=True,
-# )
-
 
 st.set_page_config(
     page_title="Brain Tumor Detection",
@@ -29,32 +22,34 @@ st.set_page_config(
     menu_items={
         "Get Help": "https://github.com/Oct4Pie/brain-tumor-detection",
         "Report a bug": "https://github.com/Oct4Pie/brain-tumor-detection/issues",
-        "About": "Detecting brain tumors using *deep Convolutional Neural Networks*. Written by Mehdi Hajmollaahmad Naraghi",
+        "About": "Detecting brain tumors using *deep Convolutional Neural Networks*",
     },
+    initial_sidebar_state="collapsed",
 )
+
 st.markdown(
     """
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" />
-<script src="https://raw.githubusercontent.com/darcyclarke/Repo.js/master/repo.min.js" />""",
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+   [data-testid="stSelectbox"] .st-emotion-cache-13bfgw8 p {
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>
+""",
     unsafe_allow_html=True,
 )
 
-
-pages = list(routes.items())
-# current_page = pages[0]
 def format_func(page):
-    #     print(page)
-    #     current_page = pages[list(routes.keys()).index(page[0])]
-    #     return current_page[0]
     return page[0]
 
-
-page = st.sidebar.selectbox(
+page = st.selectbox(
     "Menu",
-    pages,
+    list(routes.items()),
     index=0,
     format_func=format_func,
-    # on_change=current_page[1]
 )
 
 page[1]()
