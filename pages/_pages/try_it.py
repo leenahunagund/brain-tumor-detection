@@ -8,11 +8,10 @@ from .components import title
 from predictor import get_model
 from mask import crop_img
 
-# @st.cache
+@st.cache_resource  # Updated cache decorator for resources like models
 def load_model():
-    model, acc, loss = get_model(6)
-    return model, acc, loss
-
+    model, metrics = get_model(0)
+    return model, metrics
 
 def main():
     html_components.html(title())
@@ -26,11 +25,8 @@ def main():
         "Upload a brain MRI scan image", type=["png", "jpeg", "jpg"]
     )
 
-    def format_func(item):
-        return item
-
     if image_bytes:
-        array = np.fromstring(image_bytes.read(), np.uint8)
+        array = np.frombuffer(image_bytes.read(), np.uint8)
         image = cv2.imdecode(array, cv2.IMREAD_COLOR)
         image = cv2.resize(image, (128, 128))
         st.write(
@@ -42,30 +38,36 @@ def main():
 
     if st.button("Analyze"):
         with st.spinner(text="Analyzing..."):
+            model, metrics = load_model()
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             img = crop_img(gray, image, None)
             cv2.imwrite("temp.png", img)
-            model, acc, loss = load_model()
             img_mask = crop_img(gray, image, None)
             gray_mask = cv2.cvtColor(img_mask, cv2.COLOR_BGR2GRAY)
             thresh = cv2.threshold(gray_mask, 0, 255, cv2.THRESH_OTSU)[-1]
-            img = cv2.resize(img, (32, 32))
-            img = np.array([img])
-            prediction = model.predict(img)
+            img_resized = cv2.resize(img, (50, 50))  # Ensure size matches training size
+            img_resized = np.array([img_resized])
+            prediction = model.predict(img_resized)
 
             st.write(
                 """
                 #### Mask Threshold
                 """
             )
+            st.image(cv2.resize(thresh, (128, 128)), caption="Threshold Image")
 
-            st.image(cv2.resize(thresh, (128, 128)))
+            st.write("#### Prediction")
+            st.image(cv2.resize(img_mask, (128, 128)), caption="Cropped Image")
+            confidence = prediction[0][0]
+            if confidence >= 0.5:
+                st.write(f"The sample has a tumor with confidence: {confidence * 100:.2f}%")
+            else:
+                st.write(f"The sample has no tumor with confidence: {(1 - confidence) * 100:.2f}%")
 
-            st.write("""#### Prediction""")
-            st.image(cv2.resize(img_mask, (128, 128)))
-            if prediction[0][0] == 1:
-                st.write(f"The sample has a tumor")
+            st.write("#### Model Metrics")
+            st.write(f"Accuracy: {metrics['accuracy']:.2%}")
+            st.write(f"Loss: {metrics['loss']:.4f}")
+            st.write(f"Precision: {metrics['precision']:.2%}")
+            st.write(f"Recall: {metrics['recall']:.2%}")
+            st.write(f"AUC: {metrics['auc']:.2%}")
 
-            if prediction[0][0] == 0:
-                st.write(f"The sample has no tumor")
-            st.write(f"Accuracy: {acc*100:.2f}%")
