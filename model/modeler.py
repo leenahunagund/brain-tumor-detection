@@ -21,7 +21,7 @@ def is_image(file_path):
         return False
 
 def get_samples():
-    data_dir = os.path.join(os.getcwd(), "cropped")
+    data_dir = os.path.join(os.getcwd(), "model","cropped")
     paths = []
     img_formats = ["jpeg", "png", "jpg"]
 

@@ -6,7 +6,7 @@ import imghdr
 from modeler import get_samples, classify
 
 
-def get_test_sample(img_name):
+def get_test_sample(img_name, size):
     img_formats = ["jpeg", "png", "jpg"]
     img = []
 
@@ -22,29 +22,49 @@ def get_test_sample(img_name):
 
 
 def get_model(num=0):
-    os.system(f"find . -name '.DS_Store' -type f -delete")
+    model = tf.keras.models.load_model(f"model/models/test_model_{num}.keras")
+    
+    # Load samples for evaluation
     samples = get_samples()
-    read_images, properties = classify(samples, 32)
+    read_images, properties = classify(samples, 50)  # Adjust size to match training size
     train_len = len(read_images) - 400
-    train_img = read_images[:train_len]
-    train_lbl = properties[:train_len]
+    valid_data = read_images[train_len:]
+    valid_prop = properties[train_len:]
 
-    val_img = read_images[train_len::]
-    val_lbl = properties[train_len::]
-    model = tf.keras.models.load_model(f"model/models/test_model_{num}")
-    loss, acc = model.evaluate(train_img, train_lbl, verbose=2)
+    # Evaluate the model on validation data
+    loss, acc, precision, recall, auc = model.evaluate(valid_data, valid_prop, verbose=2)
 
-    return model, acc, loss
+    metrics = {
+        'accuracy': acc,
+        'loss': loss,
+        'precision': precision,
+        'recall': recall,
+        'auc': auc
+    }
+
+    return model, metrics
 
 
 if __name__ == "__main__":
-    model, acc, loss = get_model()
-    print(model.summary())
-    print("\033[92m" + "Model restored; accuracy: {:%}".format(acc) + "\033[0m")
+    size = 50  # Ensure this matches the size used in training
+    model = get_model()
+    samples = get_samples()
+    read_images, properties = classify(samples, size)
+    train_len = len(read_images) - 400
+    train_img = read_images[:train_len]
+    train_lbl = properties[:train_len]
+    ev = model.evaluate(train_img, train_lbl, verbose=2)
 
-    while 1:
-        sample = get_test_sample(input())
+    print(model.summary())
+    print(f"Model restored; {ev}")
+
+    while True:
+        img_name = input("Enter the test image filename: ")
+        sample = get_test_sample(img_name, size)
+        if sample.size == 0:
+            print("Invalid image or file not found. Please try again.")
+            continue
         predictions = model.predict(sample)
-        pred_class = model.predict_classes(sample)
-        print("predictions shape:", predictions)
-        print("prediction class:", pred_class)
+        pred_class = np.argmax(predictions, axis=-1)
+        print("Predictions shape:", predictions.shape)
+        print("Prediction class:", pred_class)
