@@ -10,9 +10,9 @@ def get_test_sample(img_name, size):
     img_formats = ["jpeg", "png", "jpg"]
     img = []
 
-    for file in os.listdir("tests"):
+    for file in os.listdir("model/tests"):
         if img_name == file:
-            file_path = os.path.join("tests", file)
+            file_path = os.path.join("model/tests", file)
             print(file_path)
             if imghdr.what(file_path):
                 if imghdr.what(file_path).lower() in img_formats:
@@ -47,7 +47,7 @@ def get_model(num=0):
 
 if __name__ == "__main__":
     size = 50  # Ensure this matches the size used in training
-    model = get_model()
+    model, _ = get_model()
     samples = get_samples()
     read_images, properties = classify(samples, size)
     train_len = len(read_images) - 400
