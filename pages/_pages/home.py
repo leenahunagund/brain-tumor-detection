@@ -9,7 +9,6 @@ from .components import title
 from predictor import get_model
 from mask import crop_img
 
-@st.cache_resource  # Updated cache decorator for resources like models
 def load_model():
     model, metrics = get_model(0)
     return model, metrics
