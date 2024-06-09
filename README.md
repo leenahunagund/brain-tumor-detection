@@ -1,17 +1,13 @@
-
-<p align="center"><img src="https://raw.githubusercontent.com/Oct4Pie/brain-tumor-detection/main/logo/brain.png" width="10%" style="margin: 0px; transform: translateY(-50%)">
-</p>
-
 # Brain-tumor-detection (CNN)
-<img src="https://i.imgur.com/C0rTivW.png">
+<h3> Mini Project</h3>
 
-## About
-This program is designed to facilitate the diagnosis of brain tumors from 2D MRI scan images, ensuring both accuracy and timeliness. The model is created using the TensorFlow API in Python, leveraging the high-level Keras API. The image classifier is based on a deep Convolutional Neural Network (CNN). For more information, try the [Streamlit app](https://brain-tumor-detection0.streamlit.app).
+<h3>About</h3>
+This program is designed to facilitate the diagnosis of brain tumors from 2D MRI scan images, ensuring both accuracy and timeliness. The model is created using the TensorFlow API in Python, leveraging the high-level Keras API. The image classifier is based on a deep Convolutional Neural Network (CNN). For more information, try the [Streamlit app](https://brain-tumor-detection-lkkbmr3m3mjs7eelmvg5eb.streamlit.app/).
 
 ## Model Information
 ### Model Summary
 ```
-Model: "sequential"
+Model: "RestNet50"
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
 ┃ Layer (type)                         ┃ Output Shape                ┃         Param # ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
@@ -49,38 +45,13 @@ Model: "sequential"
 weighted avg       1.00      1.00      1.00       400
 ```
 
-## Installation
-To set up the project locally, follow these steps:
-
-1. **Clone the repository:**
-    ```sh
-    git clone https://github.com/Oct4Pie/brain-tumor-detection.git
-    cd brain-tumor-detection
-    ```
-
-2. **Create and activate a virtual environment (Python 3.9+):**
-    ```sh
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
-
-3. **Install the required packages:**
-    ```sh
-    pip install -r requirements.txt
-    ```
-
-4. **Run the Streamlit app:**
-    ```sh
-    streamlit run app.py
-    ```
-
 ## Usage
-### Streamlit Web App
+<h5>Streamlit Web App</h5>
 - Test out the pre-made samples or
 - Upload an MRI image via the Streamlit interface.
 - The app will automatically crop the image to the brain area, analyze it, and display the results, including whether a tumor is detected and the confidence of the prediction.
 
-### Running the Model
+<h5>Running the Model</h5>
 - The model can be trained, evaluated, and used for predictions using the provided Python scripts. Make sure to adjust the file paths and parameters as needed. Please refer to [Model Details and Training Process](#more-info-model-details-and-training-process)
 
 
@@ -377,26 +348,3 @@ The `predictor.py` script is used for loading the trained model and making predi
    - It loads the trained model and evaluates its performance on a validation set to ensure it is working correctly.
    - It takes new MRI images, preprocesses them similarly to the training images, and uses the model to predict whether a tumor is present.
    - The prediction results, including the confidence level, are printed for evluation and informational purposes.
-
-## Resources for Further Reading and Learning
-
-### Deep Learning and Neural Networks
-1. **[Dive into Deep Learning (D2L)](https://d2l.ai/chapter_convolutional-neural-networks/index.html)**
-   - An interactive deep learning book with code, math, and discussions. Free and open-source.
-
-2. **[TensorFlow Official Documentation](https://www.tensorflow.org/tutorials/images/cnn)**
-   - Official tutorials and documentation for TensorFlow with guides on building convolutional neural networks. Free and open-source.
-
-3. **[Deep Learning with Python Notebooks by François Chollet](https://github.com/fchollet/deep-learning-with-python-notebooks)**
-   - Jupyter notebooks that supplement the book "Deep Learning with Python" by François Chollet. Free and open-source.
-
-### Image Processing and Computer Vision
-4. **[Practical Python and OpenCV by Adrian Rosebrock](https://www.pyimagesearch.com/practical-python-opencv/)**
-   - A practical guide to learning computer vision with Python and OpenCV. Free articles available on the blog.
-
-5. **[ImageNet Large Scale Visual Recognition Challenge (ILSVRC)](http://www.image-net.org/challenges/LSVRC/)**
-   - A large-scale image recognition challenge. Free and open-source.
-
-### Medical Imaging
-6. **[The Cancer Imaging Archive (TCIA)](https://www.cancerimagingarchive.net/)**
-   - A large archive of medical images of cancer accessible for public download. Free and open-source.
